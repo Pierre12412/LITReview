@@ -3,7 +3,9 @@
 {% block content %}
     {% for ticket in tickets %}
     <article>
-      <h2>{{ ticket.title}}</h2>
+        <h6>{{ ticket.time_created }}</h6>
+        <h5>{{ ticket.user }} a demandé une critique</h5>
+      <h3>{{ ticket.title}}</h3>
       <h5>{{ ticket.description }}</h5>
     </article>
     {% endfor %}

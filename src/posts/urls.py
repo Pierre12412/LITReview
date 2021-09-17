@@ -1,8 +1,10 @@
 from django.urls import path
-from posts.views import CriticsHome
+from posts.views import CriticsHome, TicketCreate, Review_form
 
 app_name = "posts"
 
 urlpatterns = [
-    path('',CriticsHome.as_view(),name='home')
+    path('home/',CriticsHome.as_view(),name='home'),
+    path('create_ticket/',TicketCreate.as_view(),name='create ticket'),
+    path('create_review/',Review_form.as_view(),name='create review'),
 ]
