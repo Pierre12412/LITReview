@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <h1>Inscription</h1>
+{% endblock %}
+
+{% block content %}
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="S'inscrire">
+
+        {% for error, message in errors.items %}
+        <h3 style="color : red;">
+            {{ message }}
+        </h3>
+        {% endfor %}
+    </form>
+        <button>Retourner</button>
+
+{% endblock %}

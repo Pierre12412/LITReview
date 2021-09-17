@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <h1>Connexion</h1>
+{% endblock %}
+
+{% block content %}
+<div>
+  <h3>Inscrivez-vous maintenant</h3>
+  <button>S'inscrire</button>
+</div>
+
+
+
+<form method="POST">
+  {% csrf_token %}
+  {{form.as_p}}
+  <input type="submit" value="Connexion">
+</form>
+{% endblock %}
