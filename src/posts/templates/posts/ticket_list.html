@@ -1,48 +1,57 @@
 {% extends 'base.html' %}
-{% load static %}
 {% block content %}
-<form action="/create_ticket" xmlns="http://www.w3.org/1999/html">
-    <link rel="stylesheet" href="{% static 'css/style_ticket_list.css' %}">
-      <input type="submit" value="Demander une critique">
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style_ticket_list.css' %}">
+
+<div class="buttons">
+    <form action="/create_ticket" xmlns="http://www.w3.org/1999/html">
+      <input type="submit" value="Demander une critique" class="button">
     </form>
     <form action="/create_review">
-      <input type="submit" value="Créer une critique">
+      <input type="submit" value="Créer une critique" class ="button">
     </form>
+</div>
+
+
+    <div id = 'flux'>
     {% for post in posts %}
 
         {% if post.headline != None %}
-            <p>------------------------------------------------------</p>
-            <div>
-                    {% if user.id == post.user_id %}
-                        <h5>Vous avez publié une critique</h5>
-                    {% else %}
-                            <h5>{{post.username}} a publié une critique</h5>
-                    {% endif %}
-                            <h3>{{post.headline}}-{{post.rating}}</h3>
-                            <h4>{{post.body}}</h4>
-            </div>
-            <div>
-                <h5>Ticket - {{post.ticket.username }}</h5>
-                <h4>{{post.ticket.title}}</h4>
+            <div class = 'review'>
+                <div>
+                        {% if user.id == post.user_id %}
+                            <h5>Vous avez publié une critique</h5>
+                        {% else %}
+                                <h5>{{post.username}} a publié une critique</h5>
+                        {% endif %}
+                                <h3>{{post.headline}}-{{post.rating}}</h3>
+                                <h4>{{post.body}}</h4>
+                </div>
+                <div>
+                    <h5>Ticket - {{post.ticket.username }}</h5>
+                    <h4>{{post.ticket.title}}</h4>
+                </div>
             </div>
         {% else %}
-                <p>------------------------------------------------------</p>
-            <article>
-                <h6>{{ post.time_created }}</h6>
-                {% if user.username == post.user.username %}
-                <h5>Vous avez demandé une critique</h5>
-                <h3>{{ post.title}}</h3>
-                <h5>{{ post.description }}</h5>
-                {% else %}
-                <h5>{{ post.user }} a demandé une critique</h5>
-                <h3>{{ post.title}}</h3>
-                <h5>{{ post.description }}</h5>
-                <form action="/create_review">
-                  <input type="submit" value="Créer une critique">
-                </form>
+                <div class = 'ticket'>
+                    <article>
+                        <h6>{{ post.time_created }}</h6>
+                        {% if user.username == post.user.username %}
+                        <h5>Vous avez demandé une critique</h5>
+                        <h3>{{ post.title}}</h3>
+                        <h5>{{ post.description }}</h5>
+                        {% else %}
+                        <h5>{{ post.user }} a demandé une critique</h5>
+                        <h3>{{ post.title}}</h3>
+                        <h5>{{ post.description }}</h5>
+                        <form action="/create_review">
+                          <input type="submit" value="Créer une critique">
+                        </form>
 
-                {% endif %}
-            </article>
+                        {% endif %}
+                    </article>
+                </div>
         {% endif %}
     {% endfor %}
+    </div>
 {% endblock %}
