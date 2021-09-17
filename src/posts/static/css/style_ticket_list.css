@@ -23,7 +23,7 @@
 
 .review, .ticket
 {
-    border : solid 3px white;
+    border : solid 3px black;
     width : 500px;
     margin-top : 30px;
     border-radius : 30px;
