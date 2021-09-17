@@ -1,10 +1,13 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <title>LITReview</title>
-    <nav class="menu">
-          <ul>
+    <div id="rectangle">
+    <nav>
+          <ul class="menu">
               {% if user.is_authenticated %}
             <li><a href="/home">Flux</a></li>
             <li><a href="/posts">Posts</a></li>
@@ -13,6 +16,7 @@
               {% endif %}
           </ul>
     </nav>
+    </div>
     {% block title %}
     {% endblock %}
 </head>

@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
 <form action="/create_ticket" xmlns="http://www.w3.org/1999/html">
+    <link rel="stylesheet" href="{% static 'css/style_ticket_list.css' %}">
       <input type="submit" value="Demander une critique">
     </form>
     <form action="/create_review">

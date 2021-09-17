@@ -1,0 +1,49 @@
+html{
+margin : 0;
+color : white;
+}
+
+body{
+background-color : black;
+margin : 0;
+}
+
+#rectangle {
+  width: 100%;
+  background-color:grey;
+  height: 100px;
+  display : flex;
+  margin : 0;
+  }
+
+nav{
+margin : auto;
+width:50%;
+}
+
+ul{
+display : flex;
+  margin-left:500px;
+}
+#rectangle li{
+ display: inline-block;
+ font-size : 20px;
+ margin : auto;
+}
+
+a:link {
+  color: white;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:visited {
+  color: blue;
+  background-color: transparent;
+  text-decoration: none;
+}
+a:active {
+  color: black;
+  background-color: transparent;
+  text-decoration: underline;
+}
