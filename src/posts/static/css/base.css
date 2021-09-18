@@ -19,7 +19,7 @@ margin : auto;
 width:50%;
 }
 
-ul{
+#rectangle ul{
 display : flex;
   margin-left:500px;
 }
@@ -30,12 +30,13 @@ display : flex;
 }
 
 a:link {
+    color : black;
   background-color: transparent;
   text-decoration: none;
 }
 
 a:visited {
-  color: blue;
+  color: black;
   background-color: transparent;
   text-decoration: none;
 }
@@ -44,3 +45,13 @@ a:active {
   background-color: transparent;
   text-decoration: underline;
 }
+
+#title{
+    position: absolute;
+  top : 3%; left: 10%;
+  transform: translate(-50%, -50%);
+}
+
+#page_title
+{
+text-align : center;}

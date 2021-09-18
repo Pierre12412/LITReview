@@ -1,22 +1,26 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
     <h1>Connexion</h1>
 {% endblock %}
 
 {% block content %}
-<div>
+<div id="content">
+  <link rel="stylesheet" href="{% static 'css/connexion.css' %}">
+<div id="inscription">
   <h3>Inscrivez-vous maintenant</h3>
     <form action="/create_account">
       <input type="submit" value="S'inscrire">
     </form>
 </div>
-
-
-
-<form method="POST">
+<div >
+  <form method="POST" id = "connexion">
   {% csrf_token %}
   {{form.as_p}}
-  <input type="submit" value="Connexion">
-</form>
+  <input type="submit" value="Se connecter">
+  </form>
+</div>
+</div>
+
 {% endblock %}

@@ -11,7 +11,10 @@
         display:flex;
         justify-content: space-around;
 }
-
+.button_critic
+{
+    margin-bottom : 50px;
+}
 #flux
 {
     text-align: center;

@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}
     <h1>Inscription</h1>
 {% endblock %}
 
 {% block content %}
-
-    <form method="POST">
+<div id="content">
+    <link rel="stylesheet" href="{% static 'css/inscription.css' %}">
+    <form method="POST" id="form">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="S'inscrire">
+        {{ form }}
+        <input type="submit" value="S'inscrire" class="inscription-button">
 
         {% for error, message in errors.items %}
         <h3 style="color : red;">
@@ -17,6 +18,8 @@
         </h3>
         {% endfor %}
     </form>
-        <button onclick="history.back()">Retourner</button>
-
+    <form action="/login">
+            <input type="submit" value="Retourner" class="inscription-button">
+        </form>
+</div>
 {% endblock %}
