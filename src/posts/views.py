@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView
@@ -79,7 +77,7 @@ class Follow(CreateView):
     model = UserFollows
     context_object_name = "abonnés"
     template_name = 'followed.html'
-    fields = ['followed_user', ]
+    fields = ['followed_user']
 
     def form_valid(self, form):
         model_instance = form.save(commit=False)
