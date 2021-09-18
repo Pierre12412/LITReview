@@ -3,7 +3,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView
-from posts.models import Ticket, Review
+from posts.models import Ticket, Review, UserFollows
 from itertools import chain
 
 class CriticsHome(ListView):
@@ -74,3 +74,40 @@ class CriticsMyHome(ListView):
             chain(tickets, reviews),
             key=lambda instance: instance.time_created,reverse=True)
         return result_list
+
+class Follow(CreateView):
+    model = UserFollows
+    context_object_name = "abonnés"
+    template_name = 'followed.html'
+    fields = ['followed_user', ]
+
+    def form_valid(self, form):
+        model_instance = form.save(commit=False)
+        model_instance.user = self.request.user
+        model_instance.save()
+        return HttpResponseRedirect('/followed')
+
+    def get_context_data(self, *args, **kwargs):
+        result_abonnements = []
+        result_abonnés = []
+        users = User.objects.all()
+        context = super().get_context_data(*args, **kwargs)
+        for userfollow in UserFollows.objects.all():
+            if self.request.user.id == userfollow.followed_user_id:
+                userfollow.username = userfollow.user_id
+                result_abonnés.append(userfollow)
+            if userfollow.user_id == self.request.user.id:
+                userfollow.username = userfollow.followed_user_id
+                result_abonnements.append(userfollow)
+        for user in users:
+            for abo in result_abonnés:
+                if abo.username == user.id:
+                    abo.username = user.username
+            for abonne in result_abonnements:
+                if abonne.username == user.id:
+                    abonne.username = user.username
+
+
+        context['abonnements'] = result_abonnements
+        context['abonnés'] = result_abonnés
+        return context

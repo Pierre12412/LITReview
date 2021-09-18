@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form method="POST" id="form">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Envoyer">
+    </form>
+    <h1>Abonnements</h1>
+    {% for abonnement in abonnements %}
+       <h2>{{abonnement.username}}</h2>
+    {% endfor %}
+    <h1>Abonnés</h1>
+    {% for abonné in abonnés %}
+       <h2>{{abonné.username}}</h2>
+    {% endfor %}
+</body>
+</html>
