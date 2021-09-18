@@ -57,12 +57,11 @@ class Review_form(CreateView):
 class CriticsMyHome(ListView):
     model = Ticket
     context_object_name = "posts"
-    template_name = 'posts/ticket_list.html'
+    template_name = 'posts/mypost.html'
 
     def get_queryset(self):
         tickets = Ticket.objects.filter(user_id=self.request.user.id)
         reviews = Review.objects.filter(user_id=self.request.user.id)
-        users = User.objects.all()
         for review in reviews:
             review.username = self.request.user.username
         for ticket in tickets:

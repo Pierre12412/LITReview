@@ -2,17 +2,6 @@
 {% block content %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/style_ticket_list.css' %}">
-
-<div class="buttons">
-    <form action="/create_ticket" xmlns="http://www.w3.org/1999/html">
-      <input type="submit" value="Demander une critique" class="button">
-    </form>
-    <form action="/create_review">
-      <input type="submit" value="Créer une critique" class ="button">
-    </form>
-</div>
-
-
     <div id = 'flux'>
     {% for post in posts %}
 
