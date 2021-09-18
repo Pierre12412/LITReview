@@ -50,4 +50,3 @@ class Review_form(CreateView):
     template_name = "posts/review_create.html"
     fields = ['headline','rating','body',]
 
-

@@ -24,12 +24,19 @@
                         {% else %}
                                 <h5>{{post.username}} a publié une critique</h5>
                         {% endif %}
-                                <h3>{{post.headline}}-{{post.rating}}</h3>
+                                <h3>{{post.headline}}</h3>
+                                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+                                {% for x in ""|ljust:post.rating %}
+                                    {% if forloop.counter0 <= post.rating %}
+                                        <span class="fa fa-star"></span>
+                                    {% endif %}
+                                {% endfor %}
                                 <h4>{{post.body}}</h4>
                 </div>
-                <div>
+                <div class ='ticket_in'>
                     <h5>Ticket - {{post.ticket.username }}</h5>
                     <h4>{{post.ticket.title}}</h4>
+                    <h5>{{post.ticket.description}}</h5>
                 </div>
             </div>
         {% else %}
