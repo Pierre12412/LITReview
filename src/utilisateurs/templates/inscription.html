@@ -6,20 +6,20 @@
 
 {% block content %}
 <div id="content">
+    {% for error, message in errors.items %}
+        <h3 style="color : red;">
+            {{ message }}
+        </h3>
+        {% endfor %}
     <link rel="stylesheet" href="{% static 'css/inscription.css' %}">
     <form method="POST" id="form">
         {% csrf_token %}
         {{ form }}
         <input type="submit" value="S'inscrire" class="inscription-button">
-
-        {% for error, message in errors.items %}
-        <h3 style="color : red;">
-            {{ message }}
-        </h3>
-        {% endfor %}
     </form>
     <form action="/login">
             <input type="submit" value="Retourner" class="inscription-button">
         </form>
+
 </div>
 {% endblock %}

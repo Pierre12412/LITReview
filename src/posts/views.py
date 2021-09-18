@@ -27,6 +27,10 @@ class CriticsHome(ListView):
             for ticket in tickets:
                 if review.ticket_id == ticket.id:
                     review.ticket = ticket
+        for review in reviews:
+            for ticket in tickets:
+                if review.ticket_id == ticket.id:
+                    ticket.already = True
         result_list = sorted(
             chain(tickets, reviews),
             key=lambda instance: instance.time_created,reverse=True)
@@ -50,3 +54,24 @@ class Review_form(CreateView):
     template_name = "posts/review_create.html"
     fields = ['headline','rating','body',]
 
+class CriticsMyHome(ListView):
+    model = Ticket
+    context_object_name = "posts"
+    template_name = 'posts/ticket_list.html'
+
+    def get_queryset(self):
+        tickets = Ticket.objects.filter(user_id=self.request.user.id)
+        reviews = Review.objects.filter(user_id=self.request.user.id)
+        users = User.objects.all()
+        for review in reviews:
+            review.username = self.request.user.username
+        for ticket in tickets:
+            ticket.username = self.request.user.username
+        for review in reviews:
+            for ticket in tickets:
+                if review.ticket_id == ticket.id:
+                    review.ticket = ticket
+        result_list = sorted(
+            chain(tickets, reviews),
+            key=lambda instance: instance.time_created,reverse=True)
+        return result_list

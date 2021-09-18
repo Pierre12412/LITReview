@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}
     <h1>Créer un ticket</h1>
 {% endblock %}
 
 {% block content %}
-
+<link rel="stylesheet" href="{% static 'css/ticket_create.css' %}">
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
