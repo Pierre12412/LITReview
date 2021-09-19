@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse_lazy, resolve
 from django.views.generic import ListView, CreateView
 
 from posts.forms import BookArticle, ReviewForm
@@ -53,10 +54,24 @@ class TicketCreate(CreateView):
         return HttpResponseRedirect('/home')
 
 
-def Review_form(request):
+def Review_form(request,ticket):
+    ticket = Ticket.objects.filter(id=ticket)[0]
+    if request.method == 'POST':
+        form = BookArticle(request.POST)
+        formset = ReviewForm(request.POST)
+        if form.is_valid() and formset.is_valid():
+            instance_ticket = form.save(commit=False)
+            instance_ticket.user_id = request.user.id
+            instance_ticket.save()
+
+            instance_review = formset.save(commit=False)
+            instance_review.ticket_id = instance_ticket.pk
+            instance_review.user_id = request.user.id
+            instance_review.save()
+            return HttpResponseRedirect('/posts/')
     form_ticket = BookArticle()
     form_review = ReviewForm()
-    return render(request,"posts/review_create.html",{"ticket_form":form_ticket,"review_form":form_review})
+    return render(request,"posts/review_create.html",{"ticket_form":form_ticket,"review_form":form_review, "ticket":ticket})
 
 class CriticsMyHome(ListView):
     model = Ticket

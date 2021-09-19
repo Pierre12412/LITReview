@@ -7,22 +7,30 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/review_create.css' %}">
 <div id="two_forms">
-    <h2>Livre/Article</h2>
     <form method="POST" class="formulaire">
+        <h2>Livre/Article</h2>
         {% csrf_token %}
+        {% if ticket %}
+        <article>
+            <h6>{{ ticket.time_created }}</h6>
+            {% if user.username == ticket.user.username %}
+            <h5>Vous avez publié un ticket</h5>
+            <h3>{{ ticket.title}}</h3>
+            <h5>{{ ticket.description }}</h5>
+            {% else %}
+            <h5>{{ ticket.user }} a demandé une critique</h5>
+            <h3>{{ ticket.title}}</h3>
+            <h5>{{ ticket.description }}</h5>
+            {% endif %}
+        </article>
+        {% else %}
         {{ ticket_form }}
-    </form>
-
+        {% endif %}
     <h2>Critique</h2>
-    <form method="POST" class="formulaire">
-            {% csrf_token %}
         {{ review_form }}
         <div id="button">
             <input type="submit" value="Envoyer" id="submit_button">
         </div>
-
-
-
     </form>
 </div>
 
