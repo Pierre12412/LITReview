@@ -5,3 +5,28 @@
     margin-top : 20px;
     align-items:center;
 }
+
+.formulaire
+{
+    display:flex;
+    flex-direction:column;
+    border : solid 1px black;
+    min-width : 500px;
+    padding : 30px;
+    margin-bottom : 20px
+}
+
+form
+{
+    display:flex;
+    justify-content : space-around;
+    height : 300px;
+    flex-direction:column;
+}
+
+#submit_button
+{
+    width : 100px;
+    height : 40px;
+    margin: 0 auto;
+}

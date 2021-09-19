@@ -8,16 +8,21 @@
 <link rel="stylesheet" href="{% static 'css/review_create.css' %}">
 <div id="two_forms">
     <h2>Livre/Article</h2>
-    <form method="POST">
+    <form method="POST" class="formulaire">
         {% csrf_token %}
         {{ ticket_form }}
     </form>
 
     <h2>Critique</h2>
-    <form method="POST">
-        {% csrf_token %}
+    <form method="POST" class="formulaire">
+            {% csrf_token %}
         {{ review_form }}
-        <input type="submit" value="Envoyer">
+        <div id="button">
+            <input type="submit" value="Envoyer" id="submit_button">
+        </div>
+
+
+
     </form>
 </div>
 
