@@ -11,6 +11,7 @@
 .tableau_abonnements, .tableau_abonnés
 {
     border-collapse : collapse;
+    min-width : 600px;
 }
 
 td

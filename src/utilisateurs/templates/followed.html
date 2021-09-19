@@ -16,7 +16,7 @@
     {% for abonnement in abonnements %}
         <tr>
             <td>{{abonnement.username}}</td>
-            <td>Désabonner</td>
+            <td><a href="/delete/{{abonnement.id}}">Delete me</a></td>
         </tr>
     {% endfor %}
     </table>

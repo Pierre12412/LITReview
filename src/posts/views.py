@@ -1,6 +1,9 @@
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, CreateView
+
+from posts.forms import BookArticle, ReviewForm
 from posts.models import Ticket, Review, UserFollows
 from itertools import chain
 
@@ -50,10 +53,10 @@ class TicketCreate(CreateView):
         return HttpResponseRedirect('/home')
 
 
-class Review_form(CreateView):
-    model = Review
-    template_name = "posts/review_create.html"
-    fields = ['headline','rating','body',]
+def Review_form(request):
+    form_ticket = BookArticle()
+    form_review = ReviewForm()
+    return render(request,"posts/review_create.html",{"ticket_form":form_ticket,"review_form":form_review})
 
 class CriticsMyHome(ListView):
     model = Ticket
@@ -112,3 +115,7 @@ class Follow(CreateView):
         context['abonnements'] = result_abonnements
         context['abonnés'] = result_abonnés
         return context
+
+def delete(request,id):
+    to_delete = get_object_or_404(UserFollows, pk=id).delete()
+    return HttpResponseRedirect('/followed')
