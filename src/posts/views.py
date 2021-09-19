@@ -54,19 +54,26 @@ class TicketCreate(CreateView):
         return HttpResponseRedirect('/home')
 
 
-def Review_form(request,ticket):
-    ticket = Ticket.objects.filter(id=ticket)[0]
+def Review_form(request,ticket=None):
+    try:
+        ticket = Ticket.objects.filter(id=ticket)[0]
+    except:
+        pass
     if request.method == 'POST':
+        print(request.POST)
         form = BookArticle(request.POST)
         formset = ReviewForm(request.POST)
-        if form.is_valid() and formset.is_valid():
-            instance_ticket = form.save(commit=False)
-            instance_ticket.user_id = request.user.id
-            instance_ticket.save()
-
+        if form.is_valid() or formset.is_valid():
             instance_review = formset.save(commit=False)
-            instance_review.ticket_id = instance_ticket.pk
-            instance_review.user_id = request.user.id
+            try:
+                instance_ticket = form.save(commit=False)
+                instance_ticket.user_id = request.user.id
+                instance_ticket.save()
+                instance_review.user_id = request.user.id
+                instance_review.ticket_id = instance_ticket.pk
+            except:
+                instance_review.user_id = request.user.id
+                instance_review.ticket_id = ticket.id
             instance_review.save()
             return HttpResponseRedirect('/posts/')
     form_ticket = BookArticle()
@@ -79,16 +86,25 @@ class CriticsMyHome(ListView):
     template_name = 'posts/mypost.html'
 
     def get_queryset(self):
+        all_tickets = Ticket.objects.all()
         tickets = Ticket.objects.filter(user_id=self.request.user.id)
         reviews = Review.objects.filter(user_id=self.request.user.id)
+        users = User.objects.all()
+        for review in reviews:
+            for ticket in all_tickets:
+                if ticket.id == review.ticket_id:
+                    review.ticket = ticket
         for review in reviews:
             review.username = self.request.user.username
         for ticket in tickets:
             ticket.username = self.request.user.username
-        for review in reviews:
-            for ticket in tickets:
-                if review.ticket_id == ticket.id:
-                    review.ticket = ticket
+        for user in users:
+            for review in reviews:
+                if review.ticket.user_id == user.id:
+                    review.ticket.username = user.username
+
+        print(review.ticket.username)
+
         result_list = sorted(
             chain(tickets, reviews),
             key=lambda instance: instance.time_created,reverse=True)
