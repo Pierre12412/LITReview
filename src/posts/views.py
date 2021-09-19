@@ -10,25 +10,28 @@ class CriticsHome(ListView):
     template_name = 'posts/ticket_list.html'
 
     def get_queryset(self):
-        tickets = Ticket.objects.filter()
-        reviews = Review.objects.filter()
+        follow = [self.request.user.id]
         users = User.objects.all()
+        users_follow = UserFollows.objects.filter(user_id=self.request.user.id)
+        for user in users_follow:
+            for all_user in users:
+                if all_user.id == user.followed_user_id:
+                    follow.append(all_user.id)
+        tickets = Ticket.objects.filter(user_id__in = follow)
+        reviews = Review.objects.filter(user_id__in = follow)
         for review in reviews:
             for user in users:
                 if review.user_id == user.id:
                     review.username = user.username
+            for ticket in tickets:
+                if review.ticket_id == ticket.id:
+                    review.ticket = ticket
+                    ticket.already = True
         for ticket in tickets:
             for user in users:
                 if ticket.user_id == user.id:
                     ticket.username = user.username
-        for review in reviews:
-            for ticket in tickets:
-                if review.ticket_id == ticket.id:
-                    review.ticket = ticket
-        for review in reviews:
-            for ticket in tickets:
-                if review.ticket_id == ticket.id:
-                    ticket.already = True
+
         result_list = sorted(
             chain(tickets, reviews),
             key=lambda instance: instance.time_created,reverse=True)

@@ -19,6 +19,7 @@
         {% if post.headline != None %}
             <div class = 'review'>
                 <div>
+                        <h6>{{post.time_created}}</h6>
                         {% if user.id == post.user_id %}
                             <h5>Vous avez publié une critique</h5>
                         {% else %}

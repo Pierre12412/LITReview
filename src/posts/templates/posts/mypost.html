@@ -8,10 +8,9 @@
         {% if post.headline != None %}
             <div class = 'review'>
                 <div>
+                        <h6>{{post.time_created}}</h6>
                         {% if user.id == post.user_id %}
                             <h5>Vous avez publié une critique</h5>
-                        {% else %}
-                                <h5>{{post.username}} a publié une critique</h5>
                         {% endif %}
                                 <h3>{{post.headline}}</h3>
                                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -36,16 +35,6 @@
                         <h5>Vous avez publié un ticket</h5>
                         <h3>{{ post.title}}</h3>
                         <h5>{{ post.description }}</h5>
-                        {% else %}
-                        <h5>{{ post.user }} a demandé une critique</h5>
-                        <h3>{{ post.title}}</h3>
-                        <h5>{{ post.description }}</h5>
-                        {% if post.already != True %}
-                        <form action="/create_review" class="button_critic">
-                          <input type="submit" value="Créer une critique">
-                        </form>
-                        {% endif %}
-
                         {% endif %}
                     </article>
                 </div>
