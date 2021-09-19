@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.urls import path
 
 from posts import views
-from posts.views import CriticsHome, TicketCreate, Review_form, CriticsMyHome, Follow
+from posts.views import CriticsHome, TicketCreate, CriticsMyHome, follow
 
 app_name = "posts"
 
@@ -12,6 +12,6 @@ urlpatterns = [
     path('create_review/',views.Review_form,name='create review'),
     path('create_review/<int:ticket>',views.Review_form,name='create review ticket'),
     path('posts/',CriticsMyHome.as_view(),name='myposts'),
-    path('followed/',Follow.as_view(),name = 'abonnements'),
+    path('followed/',follow,name = 'abonnements'),
     url(r'^delete/(?P<id>\d+)/$', views.delete, name='delete')
 ]

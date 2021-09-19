@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 
 from django.views.generic import ListView, CreateView
-from posts.forms import BookArticle, ReviewForm
+from posts.forms import BookArticle, ReviewForm, UserFollow
 from posts.models import Ticket, Review, UserFollows
 from itertools import chain
 
@@ -59,7 +59,6 @@ def Review_form(request,ticket=None):
     except:
         pass
     if request.method == 'POST':
-        print(request.POST)
         form = BookArticle(request.POST)
         formset = ReviewForm(request.POST)
         if form.is_valid() or formset.is_valid():
@@ -145,3 +144,36 @@ class Follow(CreateView):
 def delete(request,id):
     to_delete = get_object_or_404(UserFollows, pk=id).delete()
     return HttpResponseRedirect('/followed')
+
+def follow(request):
+    if request.method == 'POST':
+        form = UserFollow(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.user = request.user
+            instance.save()
+            return HttpResponseRedirect('/followed')
+    form = UserFollow()
+    context = {}
+    result_abonnements = []
+    result_abonnés = []
+    users = User.objects.all()
+    for userfollow in UserFollows.objects.all():
+        if request.user.id == userfollow.followed_user_id:
+            userfollow.username = userfollow.user_id
+            result_abonnés.append(userfollow)
+        if userfollow.user_id == request.user.id:
+            userfollow.username = userfollow.followed_user_id
+            result_abonnements.append(userfollow)
+    for user in users:
+        for abo in result_abonnés:
+            if abo.username == user.id:
+                abo.username = user.username
+        for abonne in result_abonnements:
+            if abonne.username == user.id:
+                abonne.username = user.username
+    context['abonnements'] = result_abonnements
+    context['abonnés'] = result_abonnés
+    context['form'] = form
+
+    return render(request, "followed.html",context)

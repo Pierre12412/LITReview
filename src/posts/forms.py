@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import User
 
 from posts.models import Ticket, Review, UserFollows
 
@@ -12,6 +13,7 @@ class BookArticle(forms.ModelForm):
             "description" : "Description",
         }
 
+
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
@@ -23,3 +25,11 @@ class ReviewForm(forms.ModelForm):
         }
         widgets = {"body": forms.Textarea()}
 
+
+class UserFollow(forms.ModelForm):
+    class Meta:
+        model = UserFollows
+        fields = ['followed_user']
+        labels = {
+            "followed_user": "Utilisateur à suivre",
+        }
