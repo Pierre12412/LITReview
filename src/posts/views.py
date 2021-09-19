@@ -1,9 +1,8 @@
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render, redirect
-from django.urls import reverse_lazy, resolve
-from django.views.generic import ListView, CreateView
+from django.shortcuts import get_object_or_404, render
 
+from django.views.generic import ListView, CreateView
 from posts.forms import BookArticle, ReviewForm
 from posts.models import Ticket, Review, UserFollows
 from itertools import chain
@@ -102,9 +101,6 @@ class CriticsMyHome(ListView):
             for review in reviews:
                 if review.ticket.user_id == user.id:
                     review.ticket.username = user.username
-
-        print(review.ticket.username)
-
         result_list = sorted(
             chain(tickets, reviews),
             key=lambda instance: instance.time_created,reverse=True)
@@ -141,11 +137,10 @@ class Follow(CreateView):
             for abonne in result_abonnements:
                 if abonne.username == user.id:
                     abonne.username = user.username
-
-
         context['abonnements'] = result_abonnements
         context['abonnés'] = result_abonnés
         return context
+
 
 def delete(request,id):
     to_delete = get_object_or_404(UserFollows, pk=id).delete()

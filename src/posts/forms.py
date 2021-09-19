@@ -1,6 +1,6 @@
 from django import forms
 
-from posts.models import Ticket, Review
+from posts.models import Ticket, Review, UserFollows
 
 
 class BookArticle(forms.ModelForm):
@@ -22,3 +22,4 @@ class ReviewForm(forms.ModelForm):
             "body" : "Commentaire"
         }
         widgets = {"body": forms.Textarea()}
+
