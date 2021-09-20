@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 
 from django.views.generic import ListView, CreateView
-from posts.forms import BookArticle, ReviewForm, UserFollow
+from posts.forms import BookArticle, ReviewForm, UserFollow, UserForm
 from posts.models import Ticket, Review, UserFollows
 from itertools import chain
 
@@ -111,15 +111,17 @@ def delete(request,id):
 
 def follow(request):
     if request.method == 'POST':
-        form = UserFollow(request.POST)
+        form = UserForm(request.POST, user=request.user)
         if form.is_valid():
-            instance = form.save(commit=False)
-            instance.user = request.user
-            instance.save()
+            users = User.objects.all()
+            for user in users:
+                if user.username == request.POST.get('user_to_follow'):
+                    new_follow = UserFollows(user=request.user,followed_user=user)
+            new_follow.save()
             return HttpResponseRedirect('/followed')
         else:
             print(form.errors)
-    form = UserFollow()
+    form = UserForm(user=request.user)
     context = {}
     result_abonnements = []
     result_abonnés = []

@@ -35,3 +35,20 @@ class UserFollow(forms.ModelForm):
         }
         widgets = {"followed_user" : forms.TextInput()}
 
+class UserForm(forms.Form):
+
+    users = User.objects.all()
+    CHOICES = ()
+    for user in users :
+        CHOICES = CHOICES + ((user,user.username),)
+    user_to_follow = forms.ChoiceField(choices=CHOICES)
+
+    def __init__(self,*args,**kwargs):
+        self.user = kwargs.pop('user', None)
+        super(UserForm, self).__init__(*args, **kwargs)
+        users = User.objects.all()
+        CHOICES = ()
+        for user in users:
+            if user.username != self.user.username:
+                CHOICES = CHOICES + ((user, user.username),)
+        self.fields['user_to_follow'] = forms.ChoiceField(choices=CHOICES)
