@@ -26,6 +26,8 @@
                         <h4>{{post.ticket.title}}</h4>
                         <h5>{{post.ticket.description}}</h5>
                     </div>
+                    <a href="review/delete/{{post.id}}">Supprimer la critique</a>
+                    <a href="/create_review/{{post.ticket.id}}/{{post.id}}">Modifier la critique</a>
                 </div>
             {% else %}
                     <div class = 'ticket'>
@@ -35,6 +37,7 @@
                             <h5>Vous avez publié un ticket</h5>
                             <h3>{{ post.title}}</h3>
                             <h5>{{ post.description }}</h5>
+                            <a href="ticket/delete/{{post.id}}">Supprimer le ticket</a>
                             {% endif %}
                         </article>
                     </div>

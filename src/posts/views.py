@@ -68,29 +68,43 @@ class TicketCreate(CreateView):
         return HttpResponseRedirect('/home')
 
 
-def Review_form(request,ticket=None):
+def Review_form(request,ticket=None,review=None):
     try:
         ticket = Ticket.objects.filter(id=ticket)[0]
+    except:
+        pass
+    try:
+        reviews = Review.objects.filter(id=review)[0]
     except:
         pass
     if request.method == 'POST':
         form = BookArticle(request.POST)
         formset = ReviewForm(request.POST)
         if form.is_valid() or formset.is_valid():
-            instance_review = formset.save(commit=False)
-            try:
-                instance_ticket = form.save(commit=False)
-                instance_ticket.user_id = request.user.id
-                instance_ticket.save()
-                instance_review.user_id = request.user.id
-                instance_review.ticket_id = instance_ticket.pk
-            except:
-                instance_review.user_id = request.user.id
-                instance_review.ticket_id = ticket.id
-            instance_review.save()
-            return HttpResponseRedirect('/posts/')
+            if reviews == None:
+                instance_review = formset.save(commit=False)
+                try:
+                    instance_ticket = form.save(commit=False)
+                    instance_ticket.user_id = request.user.id
+                    instance_ticket.save()
+                    instance_review.user_id = request.user.id
+                    instance_review.ticket_id = instance_ticket.pk
+                except:
+                    instance_review.user_id = request.user.id
+                    instance_review.ticket_id = ticket.id
+                instance_review.save()
+                return HttpResponseRedirect('/posts/')
+            else:
+                reviews.rating = request.POST.get('rating')
+                reviews.headline = request.POST.get('headline')
+                reviews.body = request.POST.get('body')
+                reviews.save()
+                return HttpResponseRedirect('/posts/')
+    try:
+        form_review = ReviewForm(initial={'headline':reviews.headline,'rating':reviews.rating,'body':reviews.body})
+    except:
+        form_review = ReviewForm()
     form_ticket = BookArticle()
-    form_review = ReviewForm()
     return render(request,"posts/review_create.html",{"ticket_form":form_ticket,"review_form":form_review, "ticket":ticket})
 
 class CriticsMyHome(ListView):
@@ -125,19 +139,23 @@ def delete(request,id):
     return HttpResponseRedirect('/followed')
 
 def follow(request):
+    context = {}
     if request.method == 'POST':
-        form = UserForm(request.POST, user=request.user)
+        form = UserForm(request.POST)
         if form.is_valid():
             users = User.objects.all()
-            for user in users:
-                if user.username == request.POST.get('user_to_follow'):
-                    new_follow = UserFollows(user=request.user,followed_user=user)
-            new_follow.save()
-            return HttpResponseRedirect('/followed')
+            try:
+                for user in users:
+                    if user.username == request.POST.get('user_to_follow'):
+                        new_follow = UserFollows(user=request.user,followed_user=user)
+                        break
+                new_follow.save()
+                return HttpResponseRedirect('/followed')
+            except:
+                context['erreur'] = 'Personne de ce nom ici ... Reéssayez'
         else:
             print(form.errors)
-    form = UserForm(user=request.user)
-    context = {}
+    form = UserForm()
     result_abonnements = []
     result_abonnés = []
     users = User.objects.all()
@@ -159,3 +177,15 @@ def follow(request):
     context['abonnés'] = result_abonnés
     context['form'] = form
     return render(request, "followed.html",context)
+
+def delete_post(request,id):
+    get_object_or_404(Ticket, pk=id).delete()
+    return HttpResponseRedirect('/posts')
+
+def update_post(request,id):
+    get_object_or_404(UserFollows, pk=id).update()
+    return HttpResponseRedirect('/posts')
+
+def delete_review(request,id):
+    get_object_or_404(Review, pk=id).delete()
+    return HttpResponseRedirect('/posts')
