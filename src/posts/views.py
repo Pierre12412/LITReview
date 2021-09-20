@@ -69,6 +69,7 @@ class TicketCreate(CreateView):
 
 
 def Review_form(request,ticket=None,review=None):
+    reviews = None
     try:
         ticket = Ticket.objects.filter(id=ticket)[0]
     except:
@@ -144,15 +145,18 @@ def follow(request):
         form = UserForm(request.POST)
         if form.is_valid():
             users = User.objects.all()
-            try:
-                for user in users:
-                    if user.username == request.POST.get('user_to_follow'):
-                        new_follow = UserFollows(user=request.user,followed_user=user)
-                        break
-                new_follow.save()
-                return HttpResponseRedirect('/followed')
-            except:
-                context['erreur'] = 'Personne de ce nom ici ... Reéssayez'
+            if request.POST.get('user_to_follow') == request.user.username:
+                context['erreur'] = 'Vous ne pouvez pas vous ajouter vous même !'
+            else:
+                try:
+                    for user in users:
+                        if user.username == request.POST.get('user_to_follow'):
+                            new_follow = UserFollows(user=request.user,followed_user=user)
+                            break
+                    new_follow.save()
+                    return HttpResponseRedirect('/followed')
+                except:
+                    context['erreur'] = 'Personne de ce nom ici ... Reéssayez'
         else:
             print(form.errors)
     form = UserForm()
@@ -182,9 +186,18 @@ def delete_post(request,id):
     get_object_or_404(Ticket, pk=id).delete()
     return HttpResponseRedirect('/posts')
 
-def update_post(request,id):
-    get_object_or_404(UserFollows, pk=id).update()
-    return HttpResponseRedirect('/posts')
+def update_post(request,ticket):
+    ticket_instance = Ticket.objects.filter(id=ticket)[0]
+    form = BookArticle(initial={"title":ticket_instance.title,"description":ticket_instance.description})
+    if request.method == 'POST':
+        forms = BookArticle(request.POST)
+        ticket0 = forms.save(commit=False)
+        ticket_instance.title = ticket0.title
+        ticket_instance.description = ticket0.description
+        ticket_instance.image = ticket0.image
+        ticket_instance.save()
+        return HttpResponseRedirect('/posts')
+    return render(request,"posts/ticket_create.html",{"form":form})
 
 def delete_review(request,id):
     get_object_or_404(Review, pk=id).delete()

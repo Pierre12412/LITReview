@@ -9,6 +9,7 @@ app_name = "posts"
 urlpatterns = [
     path('home/',CriticsHome.as_view(),name='home'),
     path('create_ticket/',TicketCreate.as_view(),name='create ticket'),
+    path('create_ticket/<int:ticket>',views.update_post,name='update ticket'),
     path('create_review/',views.Review_form,name='create review'),
     path('create_review/<int:ticket>',views.Review_form,name='create review ticket'),
     path('create_review/<int:ticket>/<int:review>',views.Review_form,name='create review ticket'),
