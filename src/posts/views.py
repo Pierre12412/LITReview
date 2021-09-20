@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 
@@ -20,8 +21,26 @@ class CriticsHome(ListView):
             for all_user in users:
                 if all_user.id == user.followed_user_id:
                     follow.append(all_user.id)
-        tickets = Ticket.objects.filter(user_id__in = follow)
-        reviews = Review.objects.filter(user_id__in = follow)
+
+
+        all_reviews = Review.objects.all()
+        all_tickets = Ticket.objects.filter(user_id=self.request.user.id)
+        review_id = []
+        ticket_id = []
+        for review in all_reviews:
+            for ticket in all_tickets:
+                if review.ticket_id == ticket.id:
+                    review_id.append(review.id)
+        for review in all_reviews:
+            if review.user_id == self.request.user.id:
+                ticket_id.append(review.ticket_id)
+
+        tickets = Ticket.objects.filter(Q(user_id__in = follow) | Q(id__in = ticket_id))
+        reviews = Review.objects.filter(Q(user_id__in = follow) | Q(id__in = review_id))
+        for ticket in tickets:
+            for user in users:
+                if ticket.user_id == user.id:
+                    ticket.username = user.username
         for review in reviews:
             for user in users:
                 if review.user_id == user.id:
@@ -30,10 +49,6 @@ class CriticsHome(ListView):
                 if review.ticket_id == ticket.id:
                     review.ticket = ticket
                     ticket.already = True
-        for ticket in tickets:
-            for user in users:
-                if ticket.user_id == user.id:
-                    ticket.username = user.username
 
         result_list = sorted(
             chain(tickets, reviews),
