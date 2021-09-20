@@ -105,42 +105,6 @@ class CriticsMyHome(ListView):
             key=lambda instance: instance.time_created,reverse=True)
         return result_list
 
-class Follow(CreateView):
-    model = UserFollows
-    context_object_name = "abonnés"
-    template_name = 'followed.html'
-    fields = ['followed_user']
-
-    def form_valid(self, form):
-        model_instance = form.save(commit=False)
-        model_instance.user = self.request.user
-        model_instance.save()
-        return HttpResponseRedirect('/followed')
-
-    def get_context_data(self, *args, **kwargs):
-        result_abonnements = []
-        result_abonnés = []
-        users = User.objects.all()
-        context = super().get_context_data(*args, **kwargs)
-        for userfollow in UserFollows.objects.all():
-            if self.request.user.id == userfollow.followed_user_id:
-                userfollow.username = userfollow.user_id
-                result_abonnés.append(userfollow)
-            if userfollow.user_id == self.request.user.id:
-                userfollow.username = userfollow.followed_user_id
-                result_abonnements.append(userfollow)
-        for user in users:
-            for abo in result_abonnés:
-                if abo.username == user.id:
-                    abo.username = user.username
-            for abonne in result_abonnements:
-                if abonne.username == user.id:
-                    abonne.username = user.username
-        context['abonnements'] = result_abonnements
-        context['abonnés'] = result_abonnés
-        return context
-
-
 def delete(request,id):
     to_delete = get_object_or_404(UserFollows, pk=id).delete()
     return HttpResponseRedirect('/followed')
@@ -153,6 +117,8 @@ def follow(request):
             instance.user = request.user
             instance.save()
             return HttpResponseRedirect('/followed')
+        else:
+            print(form.errors)
     form = UserFollow()
     context = {}
     result_abonnements = []
@@ -175,5 +141,4 @@ def follow(request):
     context['abonnements'] = result_abonnements
     context['abonnés'] = result_abonnés
     context['form'] = form
-
     return render(request, "followed.html",context)

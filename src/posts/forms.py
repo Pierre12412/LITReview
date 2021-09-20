@@ -33,3 +33,5 @@ class UserFollow(forms.ModelForm):
         labels = {
             "followed_user": "Utilisateur à suivre",
         }
+        widgets = {"followed_user" : forms.TextInput()}
+
