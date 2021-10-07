@@ -123,7 +123,7 @@ LOGOUT_REDIRECT_URL = '/login'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR,"posts/static")
+    os.path.join(BASE_DIR, "posts/static")
 ]
 
 # Default primary key field type

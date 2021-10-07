@@ -1,12 +1,14 @@
 from django.contrib.auth.models import User
+from django.db import IntegrityError
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 
 from django.views.generic import ListView, CreateView
-from posts.forms import BookArticle, ReviewForm, UserFollow, UserForm
+from posts.forms import BookArticle, ReviewForm, UserForm
 from posts.models import Ticket, Review, UserFollows
 from itertools import chain
+
 
 class CriticsHome(ListView):
     model = Ticket
@@ -22,7 +24,6 @@ class CriticsHome(ListView):
                 if all_user.id == user.followed_user_id:
                     follow.append(all_user.id)
 
-
         all_reviews = Review.objects.all()
         all_tickets = Ticket.objects.filter(user_id=self.request.user.id)
         review_id = []
@@ -35,8 +36,10 @@ class CriticsHome(ListView):
             if review.user_id == self.request.user.id:
                 ticket_id.append(review.ticket_id)
 
-        tickets = Ticket.objects.filter(Q(user_id__in = follow) | Q(id__in = ticket_id))
-        reviews = Review.objects.filter(Q(user_id__in = follow) | Q(id__in = review_id))
+        tickets = Ticket.objects\
+            .filter(Q(user_id__in=follow) | Q(id__in=ticket_id))
+        reviews = Review.objects\
+            .filter(Q(user_id__in=follow) | Q(id__in=review_id))
         for ticket in tickets:
             for user in users:
                 if ticket.user_id == user.id:
@@ -52,37 +55,37 @@ class CriticsHome(ListView):
 
         result_list = sorted(
             chain(tickets, reviews),
-            key=lambda instance: instance.time_created,reverse=True)
+            key=lambda instance: instance.time_created, reverse=True)
         return result_list
 
 
 class TicketCreate(CreateView):
     model = Ticket
     template_name = "posts/ticket_create.html"
-    fields = ['title','description','image',]
+    fields = ['title', 'description', 'image', ]
 
     def form_valid(self, form):
         model_instance = form.save(commit=False)
-        model_instance.user= self.request.user
+        model_instance.user = self.request.user
         model_instance.save()
         return HttpResponseRedirect('/home')
 
 
-def Review_form(request,ticket=None,review=None):
+def Review_form(request, ticket=None, review=None):
     reviews = None
     try:
         ticket = Ticket.objects.filter(id=ticket)[0]
-    except:
+    except IndexError:
         pass
     try:
         reviews = Review.objects.filter(id=review)[0]
-    except:
+    except IndexError:
         pass
     if request.method == 'POST':
         form = BookArticle(request.POST)
         formset = ReviewForm(request.POST)
         if form.is_valid() or formset.is_valid():
-            if reviews == None:
+            if reviews is None:
                 instance_review = formset.save(commit=False)
                 try:
                     instance_ticket = form.save(commit=False)
@@ -90,7 +93,7 @@ def Review_form(request,ticket=None,review=None):
                     instance_ticket.save()
                     instance_review.user_id = request.user.id
                     instance_review.ticket_id = instance_ticket.pk
-                except:
+                except ValueError:
                     instance_review.user_id = request.user.id
                     instance_review.ticket_id = ticket.id
                 instance_review.save()
@@ -102,11 +105,19 @@ def Review_form(request,ticket=None,review=None):
                 reviews.save()
                 return HttpResponseRedirect('/posts/')
     try:
-        form_review = ReviewForm(initial={'headline':reviews.headline,'rating':reviews.rating,'body':reviews.body})
-    except:
+        form_review = ReviewForm(
+            initial={'headline': reviews.headline,
+                     'rating': reviews.rating,
+                     'body': reviews.body}
+        )
+    except AttributeError:
         form_review = ReviewForm()
     form_ticket = BookArticle()
-    return render(request,"posts/review_create.html",{"ticket_form":form_ticket,"review_form":form_review, "ticket":ticket})
+    return render(request, "posts/review_create.html",
+                  {"ticket_form": form_ticket,
+                   "review_form": form_review,
+                   "ticket": ticket})
+
 
 class CriticsMyHome(ListView):
     model = Ticket
@@ -132,12 +143,14 @@ class CriticsMyHome(ListView):
                     review.ticket.username = user.username
         result_list = sorted(
             chain(tickets, reviews),
-            key=lambda instance: instance.time_created,reverse=True)
+            key=lambda instance: instance.time_created, reverse=True)
         return result_list
 
-def delete(request,id):
-    to_delete = get_object_or_404(UserFollows, pk=id).delete()
+
+def delete(request, id):
+    get_object_or_404(UserFollows, pk=id).delete()
     return HttpResponseRedirect('/followed')
+
 
 def follow(request):
     context = {}
@@ -146,17 +159,20 @@ def follow(request):
         if form.is_valid():
             users = User.objects.all()
             if request.POST.get('user_to_follow') == request.user.username:
-                context['erreur'] = 'Vous ne pouvez pas vous ajouter vous même !'
+                context['erreur'] = 'Vous ne pouvez pas ajouter vous même !'
             else:
                 try:
                     for user in users:
                         if user.username == request.POST.get('user_to_follow'):
-                            new_follow = UserFollows(user=request.user,followed_user=user)
+                            new_follow = UserFollows(user=request.user,
+                                                     followed_user=user)
                             break
                     new_follow.save()
                     return HttpResponseRedirect('/followed')
-                except:
+                except UnboundLocalError:
                     context['erreur'] = 'Personne de ce nom ici ... Reéssayez'
+                except IntegrityError:
+                    context['erreur'] = 'Ce contact est déjà ajouté'
         else:
             print(form.errors)
     form = UserForm()
@@ -180,15 +196,19 @@ def follow(request):
     context['abonnements'] = result_abonnements
     context['abonnés'] = result_abonnés
     context['form'] = form
-    return render(request, "followed.html",context)
+    return render(request, "followed.html", context)
 
-def delete_post(request,id):
+
+def delete_post(request, id):
     get_object_or_404(Ticket, pk=id).delete()
     return HttpResponseRedirect('/posts')
 
-def update_post(request,ticket):
-    ticket_instance = Ticket.objects.filter(id=ticket)[0]
-    form = BookArticle(initial={"title":ticket_instance.title,"description":ticket_instance.description})
+
+def update_post(request, ticket):
+    ticket_instance = Ticket.objects.filter(
+        id=ticket)[0]
+    form = BookArticle(initial={"title": ticket_instance.title,
+                                "description": ticket_instance.description})
     if request.method == 'POST':
         forms = BookArticle(request.POST)
         ticket0 = forms.save(commit=False)
@@ -197,8 +217,9 @@ def update_post(request,ticket):
         ticket_instance.image = ticket0.image
         ticket_instance.save()
         return HttpResponseRedirect('/posts')
-    return render(request,"posts/ticket_create.html",{"form":form})
+    return render(request, "posts/ticket_create.html", {"form": form})
 
-def delete_review(request,id):
+
+def delete_review(request, id):
     get_object_or_404(Review, pk=id).delete()
     return HttpResponseRedirect('/posts')
