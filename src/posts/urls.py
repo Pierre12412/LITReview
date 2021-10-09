@@ -1,15 +1,18 @@
 from django.conf.urls import url
+from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from posts import views
-from posts.views import CriticsHome, TicketCreate, CriticsMyHome, follow
+from posts.views import CriticsHome, TicketCreate, CriticsMyHome
 
 app_name = "posts"
 
 urlpatterns = [
-     path('home/', CriticsHome.as_view(),
+     path('home/', login_required(CriticsHome.as_view(),
+                                  login_url='/login'),
           name='home'),
-     path('create_ticket/', TicketCreate.as_view(),
+     path('create_ticket/', login_required(TicketCreate.as_view(),
+                                           login_url='/login'),
           name='create ticket'),
      path('create_ticket/<int:ticket>', views.update_post,
           name='update ticket'),
@@ -19,10 +22,9 @@ urlpatterns = [
           name='create review ticket'),
      path('create_review/<int:ticket>/<int:review>', views.Review_form,
           name='create review ticket'),
-     path('posts/', CriticsMyHome.as_view(),
+     path('posts/', login_required(CriticsMyHome.as_view(),
+                                   login_url='/login'),
           name='myposts'),
-     path('followed/', follow,
-          name='abonnements'),
      url(r'^delete/(?P<id>\d+)/$', views.delete,
          name='delete'),
      url(r'^posts/ticket/delete/(?P<id>\d+)/$', views.delete_post,
