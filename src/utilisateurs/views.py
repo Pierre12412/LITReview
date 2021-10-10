@@ -10,6 +10,8 @@ from posts.models import UserFollows
 
 def signup(request):
     context = {}
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('/posts')
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
