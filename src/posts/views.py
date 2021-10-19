@@ -68,6 +68,7 @@ class TicketCreate(CreateView):
         model_instance = form.save(commit=False)
         model_instance.user = self.request.user
         model_instance.save()
+        model_instance.image = self.request.FILES['image']
         return HttpResponseRedirect('/home')
 
 

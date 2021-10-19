@@ -4,6 +4,8 @@ from django.urls import path
 
 from posts import views
 from posts.views import CriticsHome, TicketCreate, CriticsMyHome
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = "posts"
 
@@ -32,3 +34,5 @@ urlpatterns = [
      url(r'^posts/review/delete/(?P<id>\d+)/$', views.delete_review,
          name='delete')
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
