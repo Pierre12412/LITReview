@@ -39,3 +39,9 @@ article
     display : flex;
     flex-direction : column;
 }
+
+.image
+{
+    width:200px;
+    margin-bottom:10px;
+}

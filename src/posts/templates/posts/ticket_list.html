@@ -38,6 +38,9 @@
                     <h5>Ticket - {{post.ticket.username}}</h5>
                     <h4>{{post.ticket.title}}</h4>
                     <h5>{{post.ticket.description}}</h5>
+                    {% if post.ticket.image %}
+                        <img src="{{post.ticket.image.url}}" class="image">
+                    {% endif %}
                 </div>
             </div>
         {% else %}
@@ -48,10 +51,16 @@
                         <h5>Vous avez publié un ticket</h5>
                         <h3>{{ post.title}}</h3>
                         <h5>{{ post.description }}</h5>
+                        {% if post.image %}
+                        <img src="{{post.image.url}}" class="image">
+                        {% endif %}
                         {% else %}
                         <h5>{{ post.user }} a demandé une critique</h5>
                         <h3>{{ post.title}}</h3>
                         <h5>{{ post.description }}</h5>
+                        {% if post.image %}
+                        <img src="{{post.image.url}}" class="image">
+                        {% endif %}
                         {% if post.already != True %}
                         <form action="/create_review/{{post.id}}" class="button_critic">
                           <input type="submit" value="Créer une critique">

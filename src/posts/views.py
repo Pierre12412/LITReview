@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.utils.datastructures import MultiValueDictKeyError
 
 from django.views.generic import ListView, CreateView
 from posts.forms import BookArticle, ReviewForm
@@ -166,13 +167,17 @@ def update_post(request, ticket):
     ticket_instance = Ticket.objects.filter(
         id=ticket)[0]
     form = BookArticle(initial={"title": ticket_instance.title,
-                                "description": ticket_instance.description})
+                                "description": ticket_instance.description,
+                                "image": ticket_instance.image})
     if request.method == 'POST':
         forms = BookArticle(request.POST)
         ticket0 = forms.save(commit=False)
         ticket_instance.title = ticket0.title
         ticket_instance.description = ticket0.description
-        ticket_instance.image = ticket0.image
+        try:
+            ticket_instance.image = request.FILES['image']
+        except MultiValueDictKeyError:
+            ticket_instance.image = ticket_instance.image
         ticket_instance.save()
         return HttpResponseRedirect('/posts')
     return render(request, "posts/ticket_create.html", {"form": form})

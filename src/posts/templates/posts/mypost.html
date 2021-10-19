@@ -25,6 +25,9 @@
                         <h5>Ticket - {{post.ticket.username}}</h5>
                         <h4>{{post.ticket.title}}</h4>
                         <h5>{{post.ticket.description}}</h5>
+                        {% if post.ticket.image %}
+                        <img src="{{post.ticket.image.url}}" class="image">
+                        {% endif %}
                     </div>
                     <a href="review/delete/{{post.id}}">Supprimer la critique</a>
                     <br>
@@ -38,6 +41,10 @@
                             <h5>Vous avez publié un ticket</h5>
                             <h3>{{ post.title}}</h3>
                             <h5>{{ post.description }}</h5>
+                            {% if post.image %}
+                            <img src="{{post.image.url}}" class="image">
+                            {% endif %}
+                            <br>
                             <a href="ticket/delete/{{post.id}}">Supprimer le ticket</a>
                             <br>
                             <a href="/create_ticket/{{post.id}}">Modifier le ticket</a>
