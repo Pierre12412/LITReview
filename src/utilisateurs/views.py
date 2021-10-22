@@ -75,4 +75,5 @@ def profile(request):
     context = {}
     context['username'] = request.user.username
     context['email'] = request.user.email
+    context['profile_picture'] = request.user.photo
     return render(request, 'profile.html', context)
