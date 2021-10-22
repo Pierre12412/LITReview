@@ -10,6 +10,7 @@
     <nav>
           <ul class="menu">
               {% if user.is_authenticated %}
+            <li><a href="/profile">Mon Profil</a></li>
             <li><a href="/home">Flux</a></li>
             <li><a href="/posts">Posts</a></li>
             <li><a href="/followed">Abonnements</a></li>

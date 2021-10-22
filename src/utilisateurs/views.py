@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -6,6 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from posts.forms import UserForm
 from posts.models import UserFollows
+from utilisateurs.models import CustomUser
 
 
 def signup(request):
@@ -28,7 +28,7 @@ def follow(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
-            users = User.objects.all()
+            users = CustomUser.objects.all()
             if request.POST.get('user_to_follow') == request.user.username:
                 context['erreur'] = 'Vous ne pouvez pas ajouter vous même !'
             else:
@@ -49,7 +49,7 @@ def follow(request):
     form = UserForm()
     result_abonnements = []
     result_abonnés = []
-    users = User.objects.all()
+    users = CustomUser.objects.all()
     for userfollow in UserFollows.objects.all():
         if request.user.id == userfollow.followed_user_id:
             userfollow.username = userfollow.user_id
@@ -68,3 +68,11 @@ def follow(request):
     context['abonnés'] = result_abonnés
     context['form'] = form
     return render(request, "followed.html", context)
+
+
+@login_required(login_url='/login')
+def profile(request):
+    context = {}
+    context['username'] = request.user.username
+    context['email'] = request.user.email
+    return render(request, 'profile.html', context)

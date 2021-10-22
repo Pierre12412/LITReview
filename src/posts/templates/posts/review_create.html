@@ -17,6 +17,9 @@
             <h5>Vous avez publié un ticket</h5>
             <h3>{{ ticket.title}}</h3>
             <h5>{{ ticket.description }}</h5>
+            {% if ticket.image %}
+                <img src="{{ticket.image.url}}" class="image">
+            {% endif %}
             {% else %}
             <h5>{{ ticket.user }} a demandé une critique</h5>
             <h3>{{ ticket.title}}</h3>

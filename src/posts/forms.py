@@ -1,7 +1,7 @@
 from django import forms
-from django.contrib.auth.models import User
 
 from posts.models import Ticket, Review, UserFollows
+from utilisateurs.models import CustomUser
 
 
 class BookArticle(forms.ModelForm):
@@ -41,5 +41,5 @@ class UserFollow(forms.ModelForm):
 
 
 class UserForm(forms.Form):
-    users = User.objects.all()
+    users = CustomUser.objects.all()
     user_to_follow = forms.CharField(label='Utilisateur à ajouter')

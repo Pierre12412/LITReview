@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
@@ -10,6 +9,8 @@ from posts.forms import BookArticle, ReviewForm
 from posts.models import Ticket, Review, UserFollows
 from itertools import chain
 
+from utilisateurs.models import CustomUser
+
 
 class CriticsHome(ListView):
     model = Ticket
@@ -18,7 +19,7 @@ class CriticsHome(ListView):
 
     def get_queryset(self):
         follow = [self.request.user.id]
-        users = User.objects.all()
+        users = CustomUser.objects.all()
         users_follow = UserFollows.objects.filter(user_id=self.request.user.id)
         for user in users_follow:
             for all_user in users:
@@ -93,6 +94,7 @@ def Review_form(request, ticket=None, review=None):
                 try:
                     instance_ticket = form.save(commit=False)
                     instance_ticket.user_id = request.user.id
+                    instance_ticket.image = request.POST['image']
                     instance_ticket.save()
                     instance_review.user_id = request.user.id
                     instance_review.ticket_id = instance_ticket.pk
@@ -131,7 +133,7 @@ class CriticsMyHome(ListView):
         all_tickets = Ticket.objects.all()
         tickets = Ticket.objects.filter(user_id=self.request.user.id)
         reviews = Review.objects.filter(user_id=self.request.user.id)
-        users = User.objects.all()
+        users = CustomUser.objects.all()
         for review in reviews:
             for ticket in all_tickets:
                 if ticket.id == review.ticket_id:
