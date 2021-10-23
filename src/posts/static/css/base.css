@@ -21,12 +21,13 @@ width:50%;
 
 #rectangle ul{
 display : flex;
-  margin-left:500px;
 }
 #rectangle li{
- display: inline-block;
+ display: flex;
  font-size : 20px;
- margin : auto;
+ justify-content: space-between;
+ margin : 20px;
+ width: 300px;
 }
 
 a:link {

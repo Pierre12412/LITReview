@@ -9,6 +9,8 @@ from utilisateurs.models import CustomUser
 
 
 def signup(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('/home')
     context = {}
     if request.method == "POST":
         form = UserCreationForm(request.POST)
