@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    <h1>Mon Profil</h1>
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+<div class="content">
+    {% if profile_picture %}
+    <img src="{{profile_picture.url}}" id="profile_picture">
+    {% endif %}
+  <h2>{{ username }}</h2>
+    <h2>{{ email }}</h2>
+</div>
+{% endblock %}

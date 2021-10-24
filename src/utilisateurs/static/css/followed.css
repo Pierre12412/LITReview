@@ -1,0 +1,41 @@
+.content{
+    margin: 0 auto;
+    display : flex;
+    flex-direction : column;
+    justify-content: space-around;
+    width : 50%;
+    margin-top : 50px;
+    align-items:center;
+}
+
+.tableau_abonnements, .tableau_abonnés
+{
+    border-collapse : collapse;
+    min-width : 600px;
+}
+
+td
+{
+   border : 1px solid black;
+   padding : 5px;
+}
+
+.tableau_abonnements tr td:nth-child(1)
+{
+    width: 500px;
+}
+
+.tableau_abonnements tr td:nth-child(2)
+{
+    width: 100px;
+}
+
+.tableau_abonnés tr td:nth-child(1)
+{
+    width : 600px;
+}
+
+#id_followed_user
+{
+    width:500px;
+}
